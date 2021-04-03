@@ -16,6 +16,7 @@ def run(video_path=None):
     show_stats = False
     draw_contours = False
 
+
     print("starting looking for perfect selfie mode")
     if video_path is None: #we are running on camera mode
         vs = VideoStream(src=0).start()
@@ -26,7 +27,6 @@ def run(video_path=None):
         cap = cv2.VideoCapture(video_path)
 
     cv2.namedWindow(running_mode)
-
     while True:
         if running_mode == 'camera':
             frame = vs.read()
@@ -59,7 +59,8 @@ def run(video_path=None):
                     pass
 
         cv2.imshow("Frame", frame)
-        fps.update()
+        if running_mode == 'camera':
+            fps.update()
 
         key2 = cv2.waitKey(1) & 0xFF
         if key2 == ord('q'):
@@ -75,4 +76,5 @@ def run(video_path=None):
 
 
 if __name__ == "__main__":
-    run()
+    video_path = r'test_video.mp4'
+    run(video_path)
