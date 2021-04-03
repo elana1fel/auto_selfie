@@ -2,7 +2,7 @@ from imutils.video import VideoStream, FPS
 import numpy as np
 import time
 import cv2
-#import selfie_utils
+import selfie_utils
 
 
 def run(video_path=None):
@@ -35,8 +35,8 @@ def run(video_path=None):
             if not ret:
                 break
 
-        #gray_img = selfie_utils.edit_img(frame)
-        mar = 5 #TODO TEMP        
+        gray_img = selfie_utils.edit_img(frame)
+        mar, mouth_hull = selfie_utils.detect_face(gray_img) 
 
         if draw_contours:
             cv2.drawContours(frame, [mouth_hull], -1, (0, 255, 0), 1)
