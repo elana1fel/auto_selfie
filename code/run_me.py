@@ -15,8 +15,7 @@ def run(video_path=None):
     last_taken_selfie = None
     show_stats = True
     draw_contours = True
-
-
+    detector, predictor = selfie_utils.init_model()
     print("starting looking for perfect selfie mode")
     if video_path is None: #we are running on camera mode
         vs = VideoStream(src=0).start()
@@ -35,8 +34,8 @@ def run(video_path=None):
             if not ret:
                 break
 
-        gray_img = selfie_utils.edit_img(frame)
-        faces = selfie_utils.detect_face(gray_img) 
+        gray_img, frame = selfie_utils.edit_img(frame)
+        faces = selfie_utils.detect_face(gray_img, detector, predictor) 
 
         for face in faces:
             if draw_contours:
@@ -44,7 +43,8 @@ def run(video_path=None):
                     cv2.drawContours(frame, [face[face_part]], -1, (0, 255, 0), 1)
         
             if show_stats:
-                cv2.putText(frame, "MAR: {}".format(face['mar']), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                for ar in ['mar', 'l_ear', 'r_ear']:
+                    cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             if face['mar'] <= .3 or face['mar'] > .38 :
                 counter += 1
@@ -58,13 +58,14 @@ def run(video_path=None):
                     else:
                         # first selfie
                         # TODO:take a selfie
+                        counter = 0
                         pass
 
         cv2.imshow("Frame", frame)
         if running_mode == 'camera':
             fps.update()
 
-        #key2 = cv2.waitKey(1) & 0xFF
+        key2 = cv2.waitKey(1) & 0xFF
         #if key2 == ord('q'):
         #    break
 
@@ -78,5 +79,6 @@ def run(video_path=None):
 
 
 if __name__ == "__main__":
-    video_path = r'test_video.mp4'
+    #video_path = r'test_video.mp4'
+    run()
     run(video_path)

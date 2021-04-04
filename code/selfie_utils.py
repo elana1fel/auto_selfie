@@ -15,7 +15,7 @@ def edit_img(frame):
     '''
     frame = imutils.resize(frame, width=450)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    return gray
+    return gray, frame
 
 def mouth_aspect_ratio(mouth):
     '''
@@ -48,14 +48,18 @@ def eye_aspect_ratio(eye):
     # return the eye aspect ratio
     return ear
 
-def detect_face(np_img):
+def init_model():
+    print("Initializing model")
+    shape_predictor= "code/dat_files/shape_predictor_68_face_landmarks.dat" #dace_landmark
+    detector = dlib.get_frontal_face_detector()
+    predictor = dlib.shape_predictor(shape_predictor)
+    return detector, predictor
+
+def detect_face(np_img, detector, predictor):
     '''
 
     '''
     faces = []
-    shape_predictor= "code/dat_files/shape_predictor_68_face_landmarks.dat" #dace_landmark
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(shape_predictor)
     mouth_start, mouth_end = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
     l_eye_start, l_eye_end = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
     r_eye_start, r_eye_end = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
@@ -64,12 +68,13 @@ def detect_face(np_img):
     for rect in rects:
         shape = predictor(np_img, rect)
         shape = face_utils.shape_to_np(shape)
-        mouth= shape[mouth_start:mouth_end]
+        mouth = shape[mouth_start:mouth_end]
         l_eye = shape[l_eye_start:l_eye_end]
         r_eye = shape[r_eye_start:r_eye_end]
         mar = mouth_aspect_ratio(mouth)
         l_ear = eye_aspect_ratio(l_eye)
         r_ear = eye_aspect_ratio(r_eye)
+
         faces.append({'mar': mar,
                       'mouth_hull' : cv2.convexHull(mouth),
                       'l_ear' : l_ear, 
