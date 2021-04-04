@@ -1,7 +1,5 @@
 numpy
-pandas
-matplotlib
-scikit-learn
-jupyter
-seaborn
-statsmodels
+dlib
+scipy
+opencv-python
+imutils
