@@ -1,8 +1,20 @@
 from imutils.video import VideoStream, FPS
+from skimage.measure import compare_ssim
+
 import numpy as np
 import time
 import cv2
 import selfie_utils
+
+
+def takeSelfie(vs, TOTAL, frame=None):
+    if frame is None:
+        frame = vs.read()
+    time.sleep(.3)
+    img_name = "opencv_frame_{}.png".format(TOTAL)
+    cv2.imwrite(img_name, frame)
+    print("{} written!".format(img_name))
+    return frame
 
 
 def run(video_path=None):
@@ -10,6 +22,8 @@ def run(video_path=None):
         running_mode = 'camera'
     else:
         running_mode = 'video'
+
+    TOTAL = 0
 
     counter = 0
     last_taken_selfie = None
@@ -43,22 +57,39 @@ def run(video_path=None):
                     cv2.drawContours(frame, [face[face_part]], -1, (0, 255, 0), 1)
         
             if show_stats:
-                for ar in ['mar', 'l_ear', 'r_ear']:
-                    cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                # for ar in ['mar', 'l_ear', 'r_ear']:
+                #     cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                cv2.putText(frame, f"{'mar'}: {face['mar']}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-            if (face['mar'] <= .26 or face['mar'] > .32) and (face['l_ear'] > .28) and (face['r_ear'] > .28):
+            if (face['mar'] <= .26 or face['mar'] > .32) and (face['l_ear'] > .3) and (face['r_ear'] > .3):
                 counter += 1
 
                 if counter >= 5: #we need to check it
                     if last_taken_selfie is not None:
+                        frame = vs.read()
+                        grayA = cv2.cvtColor(last_taken_selfie, cv2.COLOR_BGR2GRAY)
+                        grayB = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+                        (score, diff) = compare_ssim(grayA, grayB, full=True)
+                        print("SSIM: {}".format(score))
                         # check if there is a difference between current img to last taken selfie.
                         # if it is the same go back to while loop
+
+                        if score<0.8:
+                            TOTAL += 1
+
+                            last_taken_selfie = takeSelfie(vs, TOTAL, frame)
+                            counter = 0
                         pass
 
                     else:
                         # first selfie
                         # TODO:take a selfie
+                        TOTAL += 1
+
+                        last_taken_selfie = takeSelfie(vs, TOTAL)
                         counter = 0
+
                         pass
 
         cv2.imshow("Frame", frame)
