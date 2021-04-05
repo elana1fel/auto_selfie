@@ -50,7 +50,7 @@ def eye_aspect_ratio(eye):
 
 def init_model():
     print("Initializing model")
-    shape_predictor= "code/dat_files/shape_predictor_68_face_landmarks.dat" #dace_landmark
+    shape_predictor= "dat_files/shape_predictor_68_face_landmarks.dat" #dace_landmark
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(shape_predictor)
     return detector, predictor

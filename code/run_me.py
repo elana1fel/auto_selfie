@@ -46,7 +46,7 @@ def run(video_path=None):
                 for ar in ['mar', 'l_ear', 'r_ear']:
                     cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-            if face['mar'] <= .3 or face['mar'] > .38 :
+            if (face['mar'] <= .26 or face['mar'] > .32) and (face['l_ear'] > .28) and (face['r_ear'] > .28):
                 counter += 1
 
                 if counter >= 5: #we need to check it
@@ -66,8 +66,8 @@ def run(video_path=None):
             fps.update()
 
         key2 = cv2.waitKey(1) & 0xFF
-        #if key2 == ord('q'):
-        #    break
+        if key2 == ord('q'):
+           break
 
     if running_mode == 'camera':
         fps.stop()
@@ -81,4 +81,4 @@ def run(video_path=None):
 if __name__ == "__main__":
     #video_path = r'test_video.mp4'
     run()
-    run(video_path)
+    # run(video_path)
