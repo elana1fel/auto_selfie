@@ -1,5 +1,9 @@
 from imutils.video import VideoStream, FPS
+<<<<<<< HEAD
+from skimage.metrics import structural_similarity as compare_ssim
+=======
 from skimage.measure import compare_ssim
+>>>>>>> d61d7a0b8509c13324165a1e6da85a2866bfee5a
 
 import numpy as np
 import time
@@ -57,13 +61,23 @@ def run(video_path=None):
                     cv2.drawContours(frame, [face[face_part]], -1, (0, 255, 0), 1)
         
             if show_stats:
+<<<<<<< HEAD
+                y0, dy = 30, 30
+                i = 0
+                for ar in ['mar', 'l_ear', 'r_ear']:
+                    y = y0 + i * dy
+                    cv2.putText(frame, f"{ar}: {face[ar]:.5f}", (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    i += 1
+=======
                 # for ar in ['mar', 'l_ear', 'r_ear']:
                 #     cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 cv2.putText(frame, f"{'mar'}: {face['mar']}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+>>>>>>> d61d7a0b8509c13324165a1e6da85a2866bfee5a
 
             if (face['mar'] <= .26 or face['mar'] > .32) and (face['l_ear'] > .3) and (face['r_ear'] > .3):
                 counter += 1
 
+                print(f"counter is: {counter}")
                 if counter >= 5: #we need to check it
                     if last_taken_selfie is not None:
                         frame = vs.read()
