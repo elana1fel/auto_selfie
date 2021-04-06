@@ -3,3 +3,4 @@ dlib
 scipy
 opencv-python
 imutils
+scikit-image
