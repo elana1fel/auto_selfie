@@ -4,6 +4,7 @@ from imutils import face_utils
 import imutils
 import cv2
 import time
+import os
 
 def edit_img(frame):
     '''
@@ -28,7 +29,7 @@ def take_selfie(frame, total, output_folder):
     print("{} written!".format(img_name))
 
     return 
-    
+
 
 def mouth_aspect_ratio(mouth):
     '''

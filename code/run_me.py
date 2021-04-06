@@ -12,7 +12,7 @@ def train(training_folder):
     for file in os.listdir:
         file_path = os.path.join(training_folder, file)
 
-def run(input_path=None, ):
+def run(input_path=None):
     if input_path is None: #we are running on camera mode
         running_mode = 'camera'
     else:
@@ -48,6 +48,7 @@ def run(input_path=None, ):
         gray_img, resized_frame = selfie_utils.edit_img(frame)
         faces = selfie_utils.detect_face(gray_img, detector, predictor) 
 
+        i = 0 #for putText
         for face in faces:
             if draw_contours:
                 for face_part in ['mouth_hull', 'l_eye_hull', 'r_eye_hull']:
@@ -55,7 +56,6 @@ def run(input_path=None, ):
         
             if show_stats:
                 y0, dy = 30, 30
-                i = 0
                 for ar in ['mar', 'l_ear', 'r_ear']:
                     y = y0 + i * dy
                     cv2.putText(resized_frame, f"{ar}: {face[ar]:.5f}", (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -91,7 +91,7 @@ def run(input_path=None, ):
 
                         pass
 
-        cv2.imshow("Frame", frame)
+        cv2.imshow("Frame", resized_frame)
         if running_mode == 'camera':
             fps.update()
 
