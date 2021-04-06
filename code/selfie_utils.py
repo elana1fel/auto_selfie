@@ -3,6 +3,7 @@ import dlib
 from imutils import face_utils
 import imutils
 import cv2
+import time
 
 def edit_img(frame):
     '''
@@ -16,6 +17,18 @@ def edit_img(frame):
     frame = imutils.resize(frame, width=450)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     return gray, frame
+
+def take_selfie(frame, total, output_folder):
+    '''
+
+    '''
+    img_name = os.path.join(output_folder, "selfie_frame_{}.png".format(total))
+
+    cv2.imwrite(img_name, frame)
+    print("{} written!".format(img_name))
+
+    return 
+    
 
 def mouth_aspect_ratio(mouth):
     '''
