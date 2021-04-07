@@ -5,14 +5,17 @@ from skimage.metrics import structural_similarity as compare_ssim
 import numpy as np
 import time
 import cv2
-import selfie_utils
 import os
+
+import selfie_utils
+import cartoonifier
+
 
 def train(training_folder):
     for file in os.listdir:
         file_path = os.path.join(training_folder, file)
 
-def run(input_path=None):
+def run(input_path=None, cartoon = False):
     if input_path is None: #we are running on camera mode
         running_mode = 'camera'
     else:
@@ -77,7 +80,10 @@ def run(input_path=None):
 
                         if score < 0.8:
                             total += 1
-                            selfie_utils.take_selfie(frame, total, output_folder)
+                            if cartoon:
+                                cartoonifier.cartoonify(frame, total, output_folder)
+                            else:
+                                selfie_utils.take_selfie(frame, total, output_folder)
                             last_taken_selfie = gray_img
                             counter = 0
                         pass
@@ -85,6 +91,12 @@ def run(input_path=None):
                     else:
                         # first selfie
                         # TODO:take a selfie
+
+                        if cartoon:
+                            cartoonifier.cartoonify(frame, total, output_folder)
+                        else:
+                            selfie_utils.take_selfie(frame, total, output_folder)
+
                         total += 1
                         last_taken_selfie = gray_img
                         counter = 0
@@ -110,5 +122,5 @@ def run(input_path=None):
 
 if __name__ == "__main__":
     #input_path = r'test_video.mp4'
-    run()
+    run(cartoon=True)
     # run(input_path)
