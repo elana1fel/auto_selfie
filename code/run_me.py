@@ -9,13 +9,19 @@ import os
 
 import selfie_utils
 import cartoonifier
-
+import pencilifier
 
 def train(training_folder):
     for file in os.listdir:
         file_path = os.path.join(training_folder, file)
 
-def run(input_path=None, cartoon = False):
+def run(input_path=None, cartoon = False, pencil=False):
+
+    print("for regular selfies press 'n'\n"
+          "for cartoon selfies press 'c'\n"
+          "for pencil selfies press 'p'\n")
+
+
     if input_path is None: #we are running on camera mode
         running_mode = 'camera'
     else:
@@ -82,6 +88,8 @@ def run(input_path=None, cartoon = False):
                             total += 1
                             if cartoon:
                                 cartoonifier.cartoonify(frame, total, output_folder)
+                            elif pencil:
+                                pencilifier.pencilMe(frame, total, output_folder)
                             else:
                                 selfie_utils.take_selfie(frame, total, output_folder)
                             last_taken_selfie = gray_img
@@ -94,6 +102,8 @@ def run(input_path=None, cartoon = False):
 
                         if cartoon:
                             cartoonifier.cartoonify(frame, total, output_folder)
+                        elif pencil:
+                            pencilifier.pencilMe(frame, total, output_folder)
                         else:
                             selfie_utils.take_selfie(frame, total, output_folder)
 
@@ -110,6 +120,20 @@ def run(input_path=None, cartoon = False):
         key2 = cv2.waitKey(1) & 0xFF
         if key2 == ord('q'):
            break
+        if key2 == ord('p'):
+            pencil = True
+            cartoon = False
+            print("taking *PENCIL* selfies..")
+        if key2 == ord('c'):
+            pencil = False
+            cartoon = True
+            print("taking *CARTOON* selfies..")
+
+        if key2 == ord('n'):
+            print("taking *REGULAR* selfies ")
+
+            pencil = False
+            cartoon = False
 
     if running_mode == 'camera':
         fps.stop()
@@ -122,5 +146,5 @@ def run(input_path=None, cartoon = False):
 
 if __name__ == "__main__":
     #input_path = r'test_video.mp4'
-    run(cartoon=True)
+    run()
     # run(input_path)

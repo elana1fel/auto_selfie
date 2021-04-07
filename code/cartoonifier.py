@@ -29,7 +29,7 @@ def cartoonify(img, total, output_folder):
   blurred = cv2.bilateralFilter(img, d=7, sigmaColor=200, sigmaSpace=200)
   cartoon = cv2.bitwise_and(blurred, blurred, mask=edges)
 
-  img_name = os.path.join(output_folder, "selfie_cartton_{}.png".format(total))
+  img_name = os.path.join(output_folder, "selfie_cartoon_{}.png".format(total))
 
   cv2.imwrite(img_name, cartoon)
   print("{} written!".format(img_name))
