@@ -164,7 +164,7 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
             gray_img, _ = selfie_utils.edit_img(frame)
 
             if method == 'mar score':
-                smilie = get_smile_status_mar_score(detector, predictor, gray_img, mar_score)
+                smile = get_smile_status_mar_score(detector, predictor, gray_img, mar_score)
 
 
             try:
@@ -205,6 +205,8 @@ def calculate_P_R_F(result_list):
     '''
     # P : true_positives / (true_positives + false_positives)
     # R : true_positives / (true_positives + false_negative)
+
+    print("calculating P R F1")
     smile_pos, not_smile_pos, smile_neg, not_smile_neg = result_list
 
     P = smile_pos/(smile_pos+smile_neg)
