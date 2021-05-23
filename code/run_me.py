@@ -15,7 +15,7 @@ def train(training_folder):
     for file in os.listdir:
         file_path = os.path.join(training_folder, file)
 
-def run(input_path=None, cartoon = False, pencil=False):
+def run(input_path=None, cartoon = False, pencil=False, useCanny=False):
 
     print("for regular selfies press 'n'\n"
           "for cartoon selfies press 'c'\n"
@@ -87,7 +87,7 @@ def run(input_path=None, cartoon = False, pencil=False):
                         if score < 0.8:
                             total += 1
                             if cartoon:
-                                cartoonifier.cartoonify(frame, total, output_folder)
+                                cartoonifier.cartoonify(frame, total, output_folder, useCanny)
                             elif pencil:
                                 pencilifier.pencilMe(frame, total, output_folder)
                             else:
@@ -98,10 +98,10 @@ def run(input_path=None, cartoon = False, pencil=False):
 
                     else:
                         # first selfie
-                        # TODO:take a selfie
+                        # TODO:take a selfiec
 
                         if cartoon:
-                            cartoonifier.cartoonify(frame, total, output_folder)
+                            cartoonifier.cartoonify(frame, total, output_folder, useCanny)
                         elif pencil:
                             pencilifier.pencilMe(frame, total, output_folder)
                         else:
@@ -146,5 +146,7 @@ def run(input_path=None, cartoon = False, pencil=False):
 
 if __name__ == "__main__":
     #input_path = r'test_video.mp4'
-    run()
     # run(input_path)
+
+    useCanny = True
+    run(useCanny=useCanny)
