@@ -59,7 +59,7 @@ def data_loader(dataset_name, detector, predictor):
                 label = labels[sub_file]
 
             except:
-                print(f"missing label for: {sub_file}")
+                #print(f"missing label for: {sub_file}")
                 continue
 
             frame = cv2.imread(file_path)
@@ -110,9 +110,15 @@ def train(dataset_name):
 
 def get_smile_status_mar_score(detector, predictor, gray_img, mar_score):
     '''
+    Tיhis func checks for each img if there is a smile in the img
     Input:
+        detector
+        predictor
+        gray_img
+        mar_score   float   lower bound for smile   
     
     Output:
+        smile       bool    is there a smile in the img
     '''
     face = selfie_utils.detect_face(gray_img, detector, predictor) 
     try:
