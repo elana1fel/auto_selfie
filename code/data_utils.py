@@ -132,6 +132,34 @@ def get_smile_status_mar_score(detector, predictor, gray_img, mar_score):
     return False
 
 
+def get_smile_status_haar(img, gray_img):
+    '''
+    Tיhis func checks for each img if there is a smile in the img
+    Input:
+        img
+        gray_img
+
+    Output:
+        smile       bool    is there a smile in the img
+    '''
+
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
+
+
+    smile = None
+    faces = face_cascade.detectMultiScale(gray_img, 1.3, 5)
+    for (x_face, y_face, w_face, h_face) in faces:
+        roi_gray = gray_img[y_face:y_face + h_face, x_face:x_face + w_face]
+
+        # check for smile
+        smile = smile_cascade.detectMultiScale(roi_gray, scaleFactor=1.2, minNeighbors=40, minSize=(30,30))
+
+    if smile is not None:
+        return True
+    else:
+        return False
+
 def validation(dataset_name, method='mar score', mar_score=0.31):
     '''
     This func tests the algorithms result vs the labels.
@@ -147,7 +175,7 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
     '''
     print("running validation")
     
-    if method == 'mar score':
+    if method == 'mar score' or method == 'both':
         detector, predictor = selfie_utils.init_model()
 
     validation_folder = 'databases/' + dataset_name + '/images'
@@ -180,7 +208,11 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
 
             if method == 'mar score':
                 smile = get_smile_status_mar_score(detector, predictor, gray_img, mar_score)
-
+            elif method == "haar":
+                smile = get_smile_status_haar(frame, gray_img)
+            elif method == "both":
+                smile = get_smile_status_mar_score(detector, predictor, gray_img, mar_score)
+                smile = smile and get_smile_status_haar(frame, gray_img)
 
             if smile is not None:
                 if smile == label:
@@ -238,4 +270,5 @@ def calculate_P_R_F(result_list):
 if __name__ == "__main__":
     dataset_name = 'lfw_dataset' #'lfw_dataset' or 'Selfie_dataset'
     mar_score = train(dataset_name)
-    validation(dataset_name, mar_score=mar_score)
+    # validation(dataset_name, mar_score=mar_score)
+    validation(dataset_name, method='both', mar_score=mar_score)
