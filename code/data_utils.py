@@ -238,4 +238,4 @@ def calculate_P_R_F(result_list):
 if __name__ == "__main__":
     dataset_name = 'lfw_dataset' #'lfw_dataset' or 'Selfie_dataset'
     mar_score = train(dataset_name)
-    p, r, f1 = validation(dataset_name, mar_score=mar_score)
+    validation(dataset_name, mar_score=mar_score)
