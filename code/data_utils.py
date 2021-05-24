@@ -55,25 +55,29 @@ def data_loader(dataset_name, detector, predictor):
         for sub_file in file_name: #we may have more than one img in folder
             file_path = os.path.join(os.path.join(training_folder, file) ,sub_file)
 
+            try:
+                label = labels[sub_file]
+
+            except:
+                print(f"missing label for: {sub_file}")
+                continue
+
             frame = cv2.imread(file_path)
             gray_img, _ = selfie_utils.edit_img(frame)
             face = selfie_utils.detect_face(gray_img, detector, predictor) 
             try:
                 mar = face[0]['mar']
+
             except:
                 mar = -1
                 print(f"not detected face in: {sub_file}")
             
-            try:
-                label = labels[sub_file]
-                if label:
-                    smiling_list.append(mar)
+            if label:
+                smiling_list.append(mar)
 
-                else:
-                    not_smiling_list.append(mar)
+            else:
+                not_smiling_list.append(mar)
 
-            except:
-                print(f"missing label for: {sub_file}")
     smiling_list.sort()
     not_smiling_list.sort()
     len(smiling_list), len(not_smiling_list)
@@ -135,13 +139,12 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
         recall          float   ratio of correctly predicted positive observations to the all observations in actual class - yes
         f1_score        float   the weighted average of Precision and Recall. 
     '''
+    print("running validation")
+    
     if method == 'mar score':
         detector, predictor = selfie_utils.init_model()
 
     validation_folder = 'databases/' + dataset_name + '/images'
-    dataset = {}
-    smiling_list = []
-    not_smiling_list = []
 
     smile_pos = 0
     not_smile_pos = 0
@@ -160,6 +163,12 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
         for sub_file in file_name: #we may have more than one img in folder
             file_path = os.path.join(os.path.join(validation_folder, file) ,sub_file)
 
+            try:
+                label = labels[sub_file]
+
+            except:
+                continue
+
             frame = cv2.imread(file_path)
             gray_img, _ = selfie_utils.edit_img(frame)
 
@@ -167,26 +176,24 @@ def validation(dataset_name, method='mar score', mar_score=0.31):
                 smile = get_smile_status_mar_score(detector, predictor, gray_img, mar_score)
 
 
-            try:
-                label = labels[sub_file]
+            if smile is not None:
+                if smile == label:
+                    if smile:
+                        smile_pos +=1
 
-                if smile is not None:
-                    if smile == label:
-                        if smile:
-                            smile_pos +=1
-
-                        else:
-                            not_smile_pos +=1
-                    
                     else:
-                        if smile:
-                            smile_neg +=1
+                        not_smile_pos +=1
+                
+                else:
+                    if smile:
+                        smile_neg +=1
 
-                        else:
-                            not_smile_neg +=1
+                    else:
+                        not_smile_neg +=1
 
-            except:
-                pass
+            elif smile is None:
+                print(f"face not detected in {sub_file}")
+
 
     calculate_P_R_F([smile_pos, not_smile_pos, smile_neg, not_smile_neg])
 
