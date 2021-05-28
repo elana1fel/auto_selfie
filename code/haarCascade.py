@@ -11,7 +11,7 @@ last_taken_selfie = None
 total = 0
 counter = 0
 
-def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil, useCanny=False):
+def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil):
 
     global total, counter, last_taken_selfie
 
@@ -29,7 +29,7 @@ def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil, useCann
                 if score < 0.8:
                     total += 1
                     if cartoon:
-                        cartoonifier.cartoonify(frame, total, output_folder, useCanny)
+                        cartoonifier.cartoonify(frame, total, output_folder)
                     elif pencil:
                         pencilifier.pencilMe(frame, total, output_folder)
                     else:
@@ -42,7 +42,7 @@ def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil, useCann
                 # first selfie
 
                 if cartoon:
-                    cartoonifier.cartoonify(frame, total, output_folder, useCanny)
+                    cartoonifier.cartoonify(frame, total, output_folder)
                 elif pencil:
                     pencilifier.pencilMe(frame, total, output_folder)
                 else:
@@ -76,7 +76,7 @@ def detection(face_cascade, eye_cascade, smile_cascade, gray, img):
     return img, eyes, smile
 
 
-def runHaarCascade(face_cascade, eye_cascade, smile_cascade, cartoon=False, pencil=False, useCanny=False):
+def runHaarCascade(face_cascade, eye_cascade, smile_cascade, cartoon=False, pencil=False):
 
     print("for regular selfies press 'n'\n"
           "for cartoon selfies press 'c'\n"
@@ -98,7 +98,7 @@ def runHaarCascade(face_cascade, eye_cascade, smile_cascade, cartoon=False, penc
         final, eye, smile = detection(face_cascade, eye_cascade, smile_cascade, gray, img)
         cv2.imshow('Video', final)
 
-        takeSelfies(eye, smile, origImg, gray, output_folder, cartoon, pencil, useCanny)
+        takeSelfies(eye, smile, origImg, gray, output_folder, cartoon, pencil)
 
         key2 = cv2.waitKey(1) & 0xFF
         if key2 == ord('q'):
@@ -129,6 +129,4 @@ if __name__ == '__main__':
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
     smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
 
-    useCanny = False
-
-    runHaarCascade(face_cascade, eye_cascade, smile_cascade, useCanny=useCanny)
+    runHaarCascade(face_cascade, eye_cascade, smile_cascade)
