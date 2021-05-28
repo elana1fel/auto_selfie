@@ -201,8 +201,8 @@ def canny(img, sigma, L_th, H_th):
     Ix = convolve2d(img, G_dx, 'same')
     Iy = convolve2d(img, G_dy, 'same')
 
-    G_orientation = Grad_o(img, Ix, Iy)
-    G_magnitude = Grad_m(img, Ix, Iy)
+    G_orientation = Grad_o(Ix, Iy)
+    G_magnitude = Grad_m(Ix, Iy)
 
     Et = thinning(G_magnitude, G_orientation)
 
