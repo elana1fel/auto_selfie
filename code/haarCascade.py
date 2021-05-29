@@ -11,11 +11,23 @@ last_taken_selfie = None
 total = 0
 counter = 0
 
-def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil):
+def takeSelfies(eyes, smile, frame, gray, output_folder, cartoon, pencil):
+    '''
+    This functions takes the selfie if conditions of found smile and two eyes is met. the function call the desired filter function if needed
 
+    Input:
+        eyes                numpy array             array of arrays of coordinates of found eyes on image.
+        smile               numpy array             array of coordinates of found smile on image.
+        frame               numpy array             the current observed frame
+        gray                numpy array             the current observed frame as a gray scale image
+        output_folder       string                  path to save the selfies in
+        cartoon             boolean                 if true - use this filter when taking selfie
+        pencil              boolean                 if true - use this filter when taking selfie
+
+    '''
     global total, counter, last_taken_selfie
 
-    if ((eyes is not None) and (smile is not None ) and (len(eyes)>0) and (len(smile)>0)):
+    if ((eyes is not None) and (smile is not None ) and (len(eyes)==2) and (len(smile)==1)):
         counter += 1
 
         # print(f"counter is: {counter}")
@@ -55,6 +67,25 @@ def takeSelfies(eyes, smile,frame, gray, output_folder, cartoon, pencil):
                 pass
 
 def detection(face_cascade, eye_cascade, smile_cascade, gray, img):
+    '''
+    This functions detect the face, eyes and smile in a given gray image and draw the detection on the colored image
+
+    Input:
+        face_cascade        Cascade Classifier      classifier that is used to detect faces in a given image
+        eye_cascade         Cascade Classifier      classifier that is used to detect eyes in a given image
+        smile_cascade       Cascade Classifier      classifier that is used to detect smile in a given image
+        gray                numpy array             the current observed frame as a gray scale image
+        img                 numpy array             the current observed frame
+
+
+    Output:
+        img                 numpy array             the current observed frame with the rectangles of the detect face, eyes and smile
+        eyes                numpy array             array of arrays of coordinates of found eyes on image.
+        smile               numpy array             array of coordinates of found smile on image.
+
+    '''
+
+
     eyes = None
     smile = None
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -77,6 +108,19 @@ def detection(face_cascade, eye_cascade, smile_cascade, gray, img):
 
 
 def runHaarCascade(face_cascade, eye_cascade, smile_cascade, cartoon=False, pencil=False):
+    '''
+    This functions is the main function of the selfies using Haar Cascade.
+    it reads the frames from the camera and take the selfie with or without filter.
+    the function also lets the user can change the filter selection by clicking on the relevant letters.
+
+    Input:
+        face_cascade        Cascade Classifier      classifier that is used to detect faces in a given image
+        eye_cascade         Cascade Classifier      classifier that is used to detect eyes in a given image
+        smile_cascade       Cascade Classifier      classifier that is used to detect smile in a given image
+        cartoon             boolean                 if true - use this filter when taking selfie
+        pencil              boolean                 if true - use this filter when taking selfie
+    '''
+
 
     print("for regular selfies press 'n'\n"
           "for cartoon selfies press 'c'\n"

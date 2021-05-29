@@ -5,15 +5,19 @@ import os
 import canny
 
 def edge_mask(img):
+  '''
+  This functions creates an edge mask for given image using canny and dilation
+
+  Input:
+      img       numpy array     given image to create its edge mask
+
+  Output:
+      edges     numpy array     the edge mask of the image, with dilation
+  '''
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
   sigma, L_th, H_th = 0.5, 0.1, 0.3
   edges = canny.cannyEdges(gray, sigma, L_th, H_th)
-  # line_size = 7
-  # blur_value = 7
-  # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-  # gray_blur = cv2.medianBlur(gray, blur_value)
-  # edges = cv2.adaptiveThreshold(gray_blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, line_size, blur_value)
 
   edges = edges.astype(np.uint8)
   edges = edges*255
@@ -22,7 +26,20 @@ def edge_mask(img):
   edges = cv2.dilate(edges, kernel, iterations=15)
   return edges
 
-def color_quantization(img, k=11):
+def color_quantization(img, k=9):
+
+  '''
+  This functions reduce the number of colors to a given image
+
+  Input:
+      img       numpy array     image to reduce its colors
+      k         int             number of new different colors
+
+
+  Output:
+      result     numpy array     image recolored to k different colors
+  '''
+
 # Transform the image
   data = np.float32(img).reshape((-1, 3))
 
@@ -38,6 +55,17 @@ def color_quantization(img, k=11):
 
 
 def cartoonify(img, total, output_folder):
+  '''
+  This functions make a cartoon out of a given image and saves the cartoon in a given path
+
+  Input:
+      img               numpy array       image to create is cartoon
+      total             int               counter of number of selfies - used as id
+      output_folder     string            path to save the selfies in
+
+  '''
+
+
 
   edges = edge_mask(img)
   img = color_quantization(img)
