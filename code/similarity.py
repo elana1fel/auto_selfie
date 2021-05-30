@@ -40,7 +40,7 @@ def show_imgs(imgs_list, imgs_name_list=None, params=None, save=False):
     if params is not None:
         fig.suptitle(params)
 
-    save =True
+    save =False
     if save:
         params = params.split('\n')[0]
         plt.savefig("plots/" + params + ".png")
@@ -51,11 +51,21 @@ def show_imgs(imgs_list, imgs_name_list=None, params=None, save=False):
 
 
 def mse(img1, img2):
-	# computet Mean Squared Error between the two images
-	err = np.sum((img1 - img2) ** 2)
-	err /= float(img1.shape[0] * img2.shape[1])
+    '''
+    This func cumputes Mean Squared Error between the two images
+
+    Input:
+        img1        np.array
+        img2        np.array
+          
+    Output:
+        err         float       diff between images          
+    '''
+
+    err = np.sum((img1 - img2) ** 2)
+    err /= float(img1.shape[0] * img2.shape[1])
 	
-	return err
+    return err
 
 
 def test_similarity(img1, img2, method=None, debug=False):
@@ -71,7 +81,6 @@ def test_similarity(img1, img2, method=None, debug=False):
         similarity  bool        whether two images are similar
     '''
     
-    #check
     ssim_sim = True
     mse_sim = True
 
@@ -83,7 +92,10 @@ def test_similarity(img1, img2, method=None, debug=False):
         mse_sim = False
 
     if debug:
-        show_imgs([img1, img2], params=f"ssim score is: {score:.2f} and MSE err is: {err:.2f}")
+        img3 = img1 - img2 #diff in MSE
+        img4 = diff
+        show_imgs([img1, img2, img3, img4], params=f"ssim score is: {score:.2f} and MSE err is: {err:.2f}")
+
     return np.logical_and(ssim_sim, mse_sim)
 
 if __name__ == "__main__":

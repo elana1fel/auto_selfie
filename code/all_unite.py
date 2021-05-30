@@ -1,5 +1,6 @@
 import cv2
-from skimage.metrics import structural_similarity as compare_ssim
+#from skimage.metrics import structural_similarity as compare_ssim
+import similarity as compare_sim
 import os
 import time
 
@@ -56,7 +57,7 @@ def takeSelfies(frame, gray, output_folder, cartoon, pencil, useCascade, useDlib
         # print(f"counter is: {counter}")
         if counter >= 5:  # we need to check it
             if last_taken_selfie is not None:
-                (score, diff) = compare_ssim(last_taken_selfie, gray, full=True)
+                (score, diff) = compare_sim(last_taken_selfie, gray)
                 # print("SSIM: {}".format(score))
                 # check if there is a difference between current img to last taken selfie.
                 # if it is the same go back to while loop
