@@ -2,8 +2,6 @@ import cv2
 from skimage.metrics import structural_similarity as compare_ssim
 import os
 import time
-import numpy as np
-from imutils.video import VideoStream, FPS
 
 import selfie_utils
 import cartoonifier
@@ -19,13 +17,18 @@ def takeSelfies(frame, gray, output_folder, cartoon, pencil, useCascade, useDlib
     This functions takes the selfie if conditions of found smile and two eyes is met. the function call the desired filter function if needed
 
     Input:
-        eyes                numpy array             array of arrays of coordinates of found eyes on image.
-        smile               numpy array             array of coordinates of found smile on image.
+
         frame               numpy array             the current observed frame
         gray                numpy array             the current observed frame as a gray scale image
         output_folder       string                  path to save the selfies in
         cartoon             boolean                 if true - use this filter when taking selfie
         pencil              boolean                 if true - use this filter when taking selfie
+        useCascade          boolean                 if true - look for features only using cascades
+        useDlib             boolean                 if true - look for features only using Dlib
+        useBoth             boolean                 if true - look for features using cascades and Dlib
+        eyes_cascade        numpy array             array of arrays of coordinates of found eyes on image by using haar cascade.
+        smile_cascade       numpy array             array of coordinates of found smile on image by using haar cascade.
+        faces               dict                    dict contains features found using Dlib
 
     '''
     global total, counter, last_taken_selfie
@@ -88,7 +91,7 @@ def takeSelfies(frame, gray, output_folder, cartoon, pencil, useCascade, useDlib
 
 def haarDetection(face_cascade, eye_cascade, smile_cascade, gray, img):
     '''
-    This functions detect the face, eyes and smile in a given gray image and draw the detection on the colored image
+    This functions detect the face, eyes and smile in a given gray image and draw the detection on the colored image - all using haar cascades
 
     Input:
         face_cascade        Cascade Classifier      classifier that is used to detect faces in a given image
@@ -128,6 +131,22 @@ def haarDetection(face_cascade, eye_cascade, smile_cascade, gray, img):
 
 
 def dlibDetection(frame, detector, predictor, show_stats, draw_contours):
+    '''
+    This functions detect the face, eyes and smile in a given image and draw the detection of the features - using Dlib
+
+    Input:
+        frame               numpy array      classifier that is used to detect faces in a given image
+        detector
+        predictor
+        show_stats          boolean             indicates if show stats of features on image
+        draw_contours       boolean             indicates if show contours of features on image
+
+
+    Output:
+        resized_frame       numpy array             the frame resized
+        faces               dict                    dict contains features found using Dlib
+
+    '''
     gray_img, resized_frame = selfie_utils.edit_img(frame)
     faces = selfie_utils.detect_face(gray_img, detector, predictor)
 
@@ -144,14 +163,31 @@ def dlibDetection(frame, detector, predictor, show_stats, draw_contours):
                 cv2.putText(resized_frame, f"{ar}: {face[ar]:.5f}", (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (0, 0, 255), 2)
                 i += 1
-            # for ar in ['mar', 'l_ear', 'r_ear']:
-            #     cv2.putText(frame, f"{ar}: {face[ar]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             cv2.putText(resized_frame, f"{'mar'}: {face['mar']}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (0, 0, 255), 2)
     return resized_frame, faces
 
 
-def run(useCascade, useDlib, useBoth, face_cascade=None, eye_cascade=None, smile_cascade=None, input_path=None, cartoon=False, pencil=False):
+def run(useCascade, useDlib, useBoth, face_cascade=None, eye_cascade=None, smile_cascade=None, cartoon=False, pencil=False):
+    '''
+    This functions is the main function of the selfies.
+    it reads the frames from the camera and take the selfie with or without filter.
+    the function also lets the user can change the filter selection by clicking on the relevant letters.
+
+    Input:
+        useCascade          boolean                 if true - look for features only using cascades
+        useDlib             boolean                 if true - look for features only using Dlib
+        useBoth             boolean                 if true - look for features using cascades and Dlib
+        face_cascade        numpy array             array of coordinates of found face on image by using haar cascade.
+        eyes_cascade        numpy array             array of arrays of coordinates of found eyes on image by using haar cascade.
+        smile_cascade       numpy array             array of coordinates of found smile on image by using haar cascade.
+        cartoon             boolean                 if true - use this filter when taking selfie
+        pencil              boolean                 if true - use this filter when taking selfie
+
+    '''
+
+
+
     print("for regular selfies press 'n'\n"
           "for cartoon selfies press 'c'\n"
           "for pencil selfies press 'p'\n")
