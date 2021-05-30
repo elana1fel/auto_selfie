@@ -68,7 +68,7 @@ def mse(img1, img2):
     return err
 
 
-def test_similarity(img1, img2, method=None, debug=False):
+def compare_sim(img1, img2, method=None, debug=False):
     '''
     This func checks whether two images are similiar
 
@@ -116,5 +116,5 @@ if __name__ == "__main__":
         img2 = cv2.imread(img2)
         gray_img2, resized_frame2 = selfie_utils.edit_img(img2)
 
-        test_similarity(gray_img1, gray_img2, debug=True)
+        compare_sim(gray_img1, gray_img2, debug=True)
 

@@ -1,6 +1,6 @@
 import cv2
 #from skimage.metrics import structural_similarity as compare_ssim
-import similarity as compare_sim
+import similarity.compare_sim as compare_sim
 import os
 import time
 

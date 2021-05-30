@@ -1,7 +1,7 @@
 from imutils.video import VideoStream, FPS
 #from skimage.metrics import structural_similarity as compare_ssim
 # from skimage.measure import compare_ssim
-import similarity as compare_sim
+import similarity.compare_sim as compare_sim
 
 import numpy as np
 import time
