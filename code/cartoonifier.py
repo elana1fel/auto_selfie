@@ -4,7 +4,7 @@ import os
 
 import canny
 
-def edge_mask(img):
+def edge_mask(img, line_size, blur_value):
   '''
   This functions creates an edge mask for given image using canny and dilation
 
@@ -14,16 +14,26 @@ def edge_mask(img):
   Output:
       edges     numpy array     the edge mask of the image, with dilation
   '''
+
+
+  ##################### start part of try using canny #####################
+  '''
+  # sigma, L_th, H_th = 1, 0.05, 0.27
+  
+  # edges = canny.cannyEdges(gray, sigma, L_th, H_th)
+  
+  # edges = edges.astype(np.uint8)
+  # edges = np.logical_not(edges)
+  # edges = edges*255
+  
+  # edges = edges.astype(np.uint8)
+  '''
+  ##################### end part of try usin canny #####################
+
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  gray_blur = cv2.medianBlur(gray, blur_value)
+  edges = cv2.adaptiveThreshold(gray_blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, line_size, blur_value)
 
-  sigma, L_th, H_th = 0.5, 0.1, 0.3
-  edges = canny.cannyEdges(gray, sigma, L_th, H_th)
-
-  edges = edges.astype(np.uint8)
-  edges = edges*255
-
-  kernel = np.ones((33, 33), np.uint8)
-  edges = cv2.dilate(edges, kernel, iterations=15)
   return edges
 
 def color_quantization(img, k=9):
@@ -65,10 +75,18 @@ def cartoonify(img, total, output_folder):
 
   '''
 
+  line_size = 7
+  blur_value = 7
 
-
-  edges = edge_mask(img)
+  edges = edge_mask(img, line_size, blur_value)
   img = color_quantization(img)
+
+  ##################### start part of try using canny #####################
+  '''
+  # edges = np.repeat(edges[:, :, np.newaxis], 3, axis=2)
+  # cartoon = np.bitwise_and(img, edges)
+  '''
+  ##################### end part of try using canny #####################
 
   blurred = cv2.bilateralFilter(img, d=7, sigmaColor=200, sigmaSpace=200)
   cartoon = cv2.bitwise_and(blurred, blurred, mask=edges)

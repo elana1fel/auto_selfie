@@ -27,7 +27,7 @@ def takeSelfies(eyes, smile, frame, gray, output_folder, cartoon, pencil):
     '''
     global total, counter, last_taken_selfie
 
-    if ((eyes is not None) and (smile is not None ) and (len(eyes)==2) and (len(smile)==1)):
+    if ((eyes is not None) and (smile is not None ) and (len(eyes)%2 ==0) and (len(smile)>=1)):
         counter += 1
 
         # print(f"counter is: {counter}")
