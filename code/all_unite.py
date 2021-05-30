@@ -264,4 +264,4 @@ if __name__ == '__main__':
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
     smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
 
-    run(useCascade, useDlib, useBoth, face_cascade, eye_cascade, smile_cascade, input_path=None, cartoon=False, pencil=False)
+    run(useCascade, useDlib, useBoth, face_cascade, eye_cascade, smile_cascade, cartoon=False, pencil=False)
