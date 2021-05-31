@@ -57,12 +57,12 @@ def takeSelfies(frame, gray, output_folder, cartoon, pencil, useCascade, useDlib
         # print(f"counter is: {counter}")
         if counter >= 5:  # we need to check it
             if last_taken_selfie is not None:
-                (score, diff) = compare_sim(last_taken_selfie, gray)
+                score = compare_sim(last_taken_selfie, gray)
                 # print("SSIM: {}".format(score))
                 # check if there is a difference between current img to last taken selfie.
                 # if it is the same go back to while loop
 
-                if score < 0.8:
+                if score:
                     total += 1
                     if cartoon:
                         cartoonifier.cartoonify(frame, total, output_folder)
